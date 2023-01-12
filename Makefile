@@ -4,7 +4,7 @@ flask:
 	flask --debug --app views run
 
 celery:
-	celery -A views.celery_worker worker -pool=eventlet --concurrency=10 --loglevel=info
+	celery -A views.celery_worker worker --loglevel=info
 
 flower:
 	celery -A views.celery_worker flower --port=9000

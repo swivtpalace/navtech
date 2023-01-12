@@ -139,8 +139,8 @@ def get_loc(train_dir, is_not_test_mode=True):
 
     #for removing all the files from the /root/jFiles/NT_JWL_Model/img_folder
 
-    #if is_not_test_mode:
-    #    if os.path.exists(train_path) and os.path.isdir(train_path):
-    #        os.system(f'rm -rf {train_path}')
+    if is_not_test_mode:
+        if os.path.exists(train_path) and os.path.isdir(train_path):
+            os.system(f'rm -rf {train_path}')
 
     return parsed
