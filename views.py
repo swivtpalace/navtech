@@ -67,9 +67,11 @@ def upload(task_id):
 @app.route('/uploads', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        password = request.form.get('psw')
-        if password != '782701794ad0eae0957c0d35fb32cf5d675d38566b76838b6dbcb9ecdf8fe957':
-            return "Unauthorised"
+        server_password = "ABC!@#123"
+        password = request.form.get('password')
+        print(password)
+        if password != server_password:
+            return "Unauthorised request"
         if 'files[]' not in request.files:
             return "Please upload images"
         files = request.files.getlist('files[]')
