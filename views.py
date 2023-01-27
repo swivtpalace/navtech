@@ -39,6 +39,8 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 cors = CORS(app, resources={r"/upload/*": {"origins":  "*"}})
 cors = CORS(app, resources={r"/API/*": {"origins": "*"}})
 
+SERVER_PASSWORD = 'ABC!@#123'
+
 '''---------   Main Configuration end ----------------'''
 
 ''' Define celery task for heavy loads  '''
@@ -64,25 +66,41 @@ def upload(task_id):
     return render_template('upload.html', task_id=task_id)
 
 
+def _upload_task(req):
+    password = req.form.get('password')
+    print(req.files)
+    if password != SERVER_PASSWORD:
+        return "Unauthorised request"
+    if 'files[]' not in req.files:
+        return "Please upload images"
+    files = req.files.getlist('files[]')
+    photo_folder_name = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for i in range(10))
+    train_path = f'photos/{photo_folder_name}'
+    os.mkdir(train_path)
+    for file in files:
+        filename = file.filename
+        file.save(os.path.join(train_path, filename))
+    task = process_image_processing.delay(photo_folder_name)
+    return task
+
+
 @app.route('/uploads', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        server_password = "ABC!@#123"
-        password = request.form.get('password')
-        print(password)
-        if password != server_password:
-            return "Unauthorised request"
-        if 'files[]' not in request.files:
-            return "Please upload images"
-        files = request.files.getlist('files[]')
-        photo_folder_name = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for i in range(10))
-        train_path = f'photos/{photo_folder_name}'
-        os.mkdir(train_path)
-        for file in files:
-            filename = file.filename
-            file.save(os.path.join(train_path, filename))
-        task = process_image_processing.delay(photo_folder_name)
+        task = _upload_task(request)
         return redirect(url_for(".upload", task_id=task.id))
+
+
+@app.route('/api/uploads', methods=['POST'])
+def get_api_upload():
+    if request.method == 'POST':
+        task = _upload_task(request)
+        if hasattr(task, 'id'):
+            task.wait()
+            job_result = AsyncResult(task.id, app=celery_worker)
+            return job_result.result
+        else:
+            return {'message': 'Task object not define'}
 
 
 @app.route('/test-workload')
