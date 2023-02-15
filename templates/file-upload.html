@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Navtech Image Training</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .lds-facebook {
+          display: inline-block;
+          position: relative;
+          width: 80px;
+          height: 80px;
+        }
+      .lds-facebook div {
+        display: inline-block;
+        position: absolute;
+        left: 8px;
+        width: 16px;
+        background: hsl(180deg 51% 52%);
+        animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+      }
+      .lds-facebook div:nth-child(1) {
+        left: 8px;
+        animation-delay: -0.24s;
+      }
+      .lds-facebook div:nth-child(2) {
+        left: 32px;
+        animation-delay: -0.12s;
+      }
+      .lds-facebook div:nth-child(3) {
+        left: 56px;
+        animation-delay: 0;
+      }
+      @keyframes lds-facebook {
+        0% {
+          top: 8px;
+          height: 64px;
+        }
+        50%, 100% {
+          top: 24px;
+          height: 32px;
+        }
+      }
+      .loader{
+        display:none
+      }
+      .mt-20{
+        margin-top:20px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <div class="container">
+        <div class="header clearfix">
+          <h3 class="text-muted">Navtech LLC.</h3>
+        </div>
+
+        <div class="jumbotron">
+          <h3> AI Image Train Lib  </h3>
+            <div class="row mt-20">
+                <div class="col-md-8">
+                    <form action="/file/upload" class="form-horizontal" method="post"  enctype='multipart/form-data'>
+                        <div class="form-group">
+                            <label> Password </label>
+                            <input type="password" class="form-control" name="password" required='required' placeholder="Enter a password">
+                        </div>
+                        <div class="form-group">
+                              <label> Photos </label>
+                              <input type="file" class="form-control" name="files[]" multiple="true" required/>
+                          </div>
+                          <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-success" role="button">Submit</button>
+                          </div>
+                  </form>
+                </div>
+            </div>
+        </div>
+      </div>
+  </body>
+</html>

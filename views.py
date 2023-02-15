@@ -1,7 +1,6 @@
 # CONFIDENTIAL 
 # This codes are is intended only for the use of the individual or entity to which it is addressed. It is a classified information that is privileged and confidential.
 import time
-
 from flask import Flask, render_template, redirect, request, jsonify, make_response, Response, url_for
 import glob
 import json
@@ -89,6 +88,19 @@ def upload_file():
     if request.method == 'POST':
         task = _upload_task(request)
         return redirect(url_for(".upload", task_id=task.id))
+
+
+@app.route('/file/upload', methods=['GET', 'POST'])
+def file_upload():
+    if request.method == 'POST':
+        task = _upload_task(request)
+        if hasattr(task, 'id'):
+            task.wait()
+            job_result = AsyncResult(task.id, app=celery_worker)
+            return job_result.result
+        else:
+            return {'message': 'Task object not define'}
+    return render_template('file-upload.html')
 
 
 @app.route('/api/uploads', methods=['POST'])
