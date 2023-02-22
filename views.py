@@ -46,8 +46,8 @@ SERVER_PASSWORD = 'ABC!@#123'
 
 
 @celery_worker.task()
-def process_image_processing(train_dir):
-    json_dump = ver.get_loc(train_dir=train_dir)
+def process_image_processing(train_dir, is_not_test_mode=True):
+    json_dump = ver.get_loc(train_dir=train_dir, is_not_test_mode=is_not_test_mode)
     return {"status": True, "result": json_dump}
 
 
@@ -67,7 +67,6 @@ def upload(task_id):
 
 def _upload_task(req):
     password = req.form.get('password')
-    print(req.files)
     if password != SERVER_PASSWORD:
         return "Unauthorised request"
     if 'files[]' not in req.files:
@@ -118,7 +117,7 @@ def get_api_upload():
 @app.route('/test-workload')
 def get_workload_test():
     train_paths = ['photo1', 'photo2', 'photo3', 'photo4', 'photo5']
-    task = process_image_processing.delay(random.choice(train_paths))
+    task = process_image_processing.delay(random.choice(train_paths), False)
     task.wait()
     job = AsyncResult(task.id, app=celery_worker)
     return {

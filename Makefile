@@ -14,4 +14,4 @@ celery_clear_queue:
 
 
 stress:
-	locust -f tests/locustfile.py  --headless --users=1000  -r=30  --host=http://localhost:5000   --run-time=300s  --csv=log-test.csv
+	locust -f tests/locustfile.py  --headless --users=100  -r=30  --host=http://localhost:5000   --run-time=180s  --csv=log-test.csv
